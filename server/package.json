@@ -1,0 +1,18 @@
+{
+  "name": "dc-capacity-server",
+  "version": "1.0.0",
+  "description": "数据中心机柜容量管理平台 - API 服务",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/seed.js --run",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}

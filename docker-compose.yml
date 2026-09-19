@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dc-postgres
+    environment:
+      POSTGRES_USER: dcadmin
+      POSTGRES_PASSWORD: dcpass
+      POSTGRES_DB: dc_capacity
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dcadmin -d dc_capacity"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  server:
+    build: ./server
+    container_name: dc-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: dcadmin
+      PGPASSWORD: dcpass
+      PGDATABASE: dc_capacity
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  client:
+    build: ./client
+    container_name: dc-client
+    depends_on:
+      - server
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
